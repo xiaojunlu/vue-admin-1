@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function getList(query) {
   return request({
-    url: '/admin/admin/index',
+    url: '/admin',
     method: 'post',
     data: query
   })
@@ -12,7 +12,9 @@ export function getinfo(id) {
   return request({
     url: '/admin/admin/getinfo',
     method: 'get',
-    params: { id }
+    params: {
+      id
+    }
   })
 }
 
@@ -36,7 +38,9 @@ export function del(id) {
   return request({
     url: '/admin/admin/del',
     method: 'get',
-    params: { id }
+    params: {
+      id
+    }
   })
 }
 
