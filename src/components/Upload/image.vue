@@ -13,6 +13,7 @@
       :on-preview="handlePreview"
       :on-exceed="handleExceed"
       :before-upload="beforeUpload"
+      :headers="headers"
       :on-progress="onProgress"
       :on-success="handleSuccess"
       :on-error="handleError"
@@ -26,6 +27,7 @@
 
 <script>
 import { getArrByKey } from '@/utils'
+import { getToken } from '@/utils/auth'
 import openWindow from '@/utils/openWindow'
 export default {
   name: 'ImageUpload',
@@ -38,7 +40,7 @@ export default {
       type: Object,
       default: {
         fileName: 'file',
-        limit: 5,
+        limit: 1,
         multiple: false,
         accept: 'image/*',
         action: '',
@@ -48,13 +50,16 @@ export default {
   },
   data() {
     return {
+      headers: {
+        'x-access-token': getToken()  //从cookie里获取token，并赋值  x-access-token ，而不是token
+      },
       limit: this.config.limit,
       fileName: this.config.fileName,
       multiple: this.config.multiple,
       accept: this.config.accept,
       action: this.config.action,
       drag: this.config.drag,
-      dataobj: { filename: this.config.fileName }
+      dataobj: { filename: this.config.fileName ,group: this.config.group}
     }
   },
   computed: {
@@ -101,6 +106,10 @@ export default {
         this.$message.error('上传图片大小不能超过 5MB!')
         return false
       }
+      if(!getToken()){
+        this.$message.error('您还没登陆或登陆失效,请重新登陆!')
+        return false
+      }
       return isIMG && isLt5M
     },
     onProgress(event, file, fileList) {
@@ -112,7 +121,8 @@ export default {
       if (res.status === 1) {
         for (let i = 0; i < fileList.length; i++) {
           if (fileList[i]['uid'] === file['uid']) {
-            fileList[i]['url'] = res.data.url
+            fileList[i]['url'] = res.data.url,
+            fileList[i]['uri'] = res.data.uri
             break
           }
         }

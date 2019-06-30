@@ -4,20 +4,20 @@
       <el-form-item label="角色" prop="groupId">
         <el-input v-model="group" :disabled="true"/>
       </el-form-item>
-      <el-form-item label="账号" prop="userName">
-        <el-input v-model="name" :disabled="true"/>
+      <el-form-item label="账号" prop="username">
+        <el-input v-model="temp.username" :disabled="true"/>
       </el-form-item>
       <el-form-item label="密码" prop="password">
         <el-input v-model="temp.password" clearable placeholder="不修改，则留空"/>
       </el-form-item>
-      <el-form-item label="头像" prop="img">
-        <Upload v-model="temp.img" :config="config"/>
+      <el-form-item label="头像" prop="avatar">
+        <Upload v-model="temp.avatar" :config="config"/>
       </el-form-item>
-      <el-form-item label="姓名" prop="realName">
-        <el-input v-model="temp.realName" clearable/>
+      <el-form-item label="姓名" prop="truename">
+        <el-input v-model="temp.truename" clearable/>
       </el-form-item>
-      <el-form-item label="手机" prop="phone">
-        <el-input v-model="temp.phone" clearable/>
+      <el-form-item label="手机" prop="verified_mobile">
+        <el-input v-model="temp.verified_mobile" clearable/>
       </el-form-item>
       <el-form-item label="邮箱" prop="email">
         <el-input v-model="temp.email" clearable/>
@@ -28,27 +28,29 @@
 </template>
 
 <script>
-import Upload from '@/components/Upload/image'
+import Upload from '@/components/Upload/Avatar'
 import { modify } from '@/api/admin'
 import { mapGetters } from 'vuex'
 import store from '@/store'
 import myconfig from '@/config'
 
 export default {
-  name: 'MyInfo',
+  username: 'MyInfo',
   components: { Upload },
   data() {
     return {
       btnLoading: false,
       temp: {
+        username: store.getters.username,
         password: '',
-        realName: store.getters.realName,
-        phone: store.getters.phone,
+        truename: store.getters.truename,
+        verified_mobile: store.getters.verified_mobile,
         email: store.getters.email,
-        img: [store.getters.avatar]
+        avatar: store.getters.avatar
       },
       config: {
-        fileName: 'img',
+        group:'user',
+        fileName: 'file',
         limit: 1,
         multiple: true,
         accept: 'image/*',
@@ -59,7 +61,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'name',
+      'username',
       'group'
     ])
   },
@@ -89,8 +91,8 @@ export default {
           modify(d).then(response => {
             if (response.status === 1) {
               store.commit('SET_AVATAR', _this.temp.img)
-              store.commit('SET_REALNAME', _this.temp.realName)
-              store.commit('SET_PHONE', _this.temp.phone)
+              store.commit('SET_TRUENAME', _this.temp.realName)
+              store.commit('SET_VERIFIED_MOBILE', _this.temp.verified_mobile)
               store.commit('SET_EMAIL', _this.temp.email)
               _this.$message.success(response.msg)
             } else {

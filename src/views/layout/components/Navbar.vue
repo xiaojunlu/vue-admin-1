@@ -21,7 +21,7 @@
         <el-dropdown-menu slot="dropdown">
 
           <el-dropdown-item>
-            <span style="display:block;" @click="setRightBar">{{ name }}</span>
+            <span style="display:block;" @click="setRightBar">{{ username }}</span>
           </el-dropdown-item>
 
           <el-dropdown-item divided>
@@ -65,7 +65,7 @@ export default {
     ...mapGetters([
       'sidebar',
       'rihgtbar',
-      'name',
+      'username',
       'avatar',
       'device'
     ])
@@ -80,7 +80,7 @@ export default {
       })
     },
     setRightBar() {
-      this.$store.dispatch('setRightBar', 1)
+      this.$store.dispatch('setRightBar', true)
     }
   }
 }

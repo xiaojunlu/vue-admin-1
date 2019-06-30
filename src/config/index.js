@@ -20,7 +20,7 @@ export default {
 
   // 上传路径
   uploadUrl: {
-    img: 'http://api.hardphp.com/index.php/admin/upload/upimage',
+    img: 'http://api.meiwei.com/admin/file/upload',
     video: '',
     file: ''
   }

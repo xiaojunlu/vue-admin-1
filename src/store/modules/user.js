@@ -4,11 +4,11 @@ import { getToken, setToken, removeToken } from '@/utils/auth'
 const user = {
   state: {
     token: getToken(),
-    name: '',
+    username: '',
     avatar: '',
     status: '',
-    realName: '',
-    phone: '',
+    truename: '',
+    verified_mobile: '',
     email: '',
     roles: 0,
     group: ''
@@ -18,20 +18,20 @@ const user = {
     SET_TOKEN: (state, token) => {
       state.token = token
     },
-    SET_REALNAME: (state, realName) => {
-      state.realName = realName
+    SET_TRUENAME: (state, truename) => {
+      state.truename = truename
     },
     SET_EMAIL: (state, email) => {
       state.email = email
     },
-    SET_PHONE: (state, phone) => {
-      state.phone = phone
+    SET_VERIFIED_MOBILE: (state, verified_mobile) => {
+      state.verified_mobile = verified_mobile
     },
     SET_STATUS: (state, status) => {
       state.status = status
     },
-    SET_NAME: (state, name) => {
-      state.name = name
+    SET_USERNAME: (state, username) => {
+      state.username = username
     },
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar
@@ -74,10 +74,10 @@ const user = {
           } else {
             reject('拉取用户权限失败')
           }
-          commit('SET_NAME', data.userName)
-          commit('SET_AVATAR', data.img)
-          commit('SET_REALNAME', data.realName)
-          commit('SET_PHONE', data.phone)
+          commit('SET_USERNAME', data.username)
+          commit('SET_AVATAR', data.avatar)
+          commit('SET_TRUENAME', data.truename)
+          commit('SET_VERIFIED_MOBILE', data.verified_mobile)
           commit('SET_EMAIL', data.email)
           commit('SET_GROUP', data.group)
           resolve(response)
@@ -103,7 +103,7 @@ const user = {
         getUserInfo().then(response => {
           const data = response.data
           commit('SET_ROLES', data.roles)
-          commit('SET_NAME', data.name)
+          commit('SET_USERNAME', data.username)
           commit('SET_AVATAR', data.avatar)
           commit('SET_INTRODUCTION', data.introduction)
           dispatch('GenerateRoutes', data) // 动态修改权限后 重绘侧边菜单
