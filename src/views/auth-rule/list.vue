@@ -7,7 +7,7 @@
         <el-button v-waves type="warning" icon="el-icon-refresh" circle @click="handleFilterClear" />
       </el-tooltip>
       <el-tooltip content="添加" placement="top">
-        <el-button v-waves type="success" icon="el-icon-plus" circle @click="handleCreate" />
+        <el-button v-waves type="success" icon="el-icon-plus" circle @click="handleAdd" />
       </el-tooltip>
       <el-tooltip content="删除" placement="top">
         <el-button v-waves :loading="deleting" :disabled="buttonDisabled" type="danger" icon="el-icon-delete" circle @click="handleDeleteAll()" />
@@ -63,7 +63,7 @@
   </tree-table>
 
   <!-- 表单 -->
-  <auth-rule-detail ref="fromRules" :rule-list="list" :is-edit="isEdit" @updateRow="updateRow" />
+  <auth-rule-detail ref="fromRules" :rule-list="list" @updateRow="updateRow" />
 
 </div>
 </template>
@@ -104,7 +104,6 @@ export default {
   },
   data() {
     return {
-      isEdit: false,
       tableKey: 0,
       list: null,
       selectedRows: null,
@@ -147,12 +146,11 @@ export default {
     handleSelectionChange(val) {
 
     },
-    handleCreate() {
-      this.$refs.fromRules.show()
+    handleAdd() {
+      this.$refs.fromRules.handleAdd()
     },
     handleEdit(index, id) {
-      this.isEdit = true
-      this.$refs.fromRules.show()
+      this.$refs.fromRules.handleEdit(id)
     },
     handleModifyStatus(index, id, status) {
 

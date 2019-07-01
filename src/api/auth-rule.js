@@ -15,6 +15,14 @@ export function getAuthRule(id) {
   })
 }
 
+export function createAuthRule(data) {
+  return request({
+    url: '/admin/auth_rules',
+    method: 'post',
+    data
+  })
+}
+
 export function updateAuthRule(id, data) {
   return request({
     url: '/admin/auth_rules/' + id,

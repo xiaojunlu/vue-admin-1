@@ -1,7 +1,9 @@
 <template>
 <el-dialog :title="isEdit?'编辑':'添加'" :visible.sync="dialogFormVisible">
   <el-form ref="postForm" :rules="rules" :model="postForm" label-width="80px" label-position="left">
-
+    <el-form-item label="上级" prop="pid">
+      <el-cascader v-model="pid" :options="getRulesList" :props="props_pid" placeholder="请选择" change-on-select @change="handleChange" />
+    </el-form-item>
     <el-form-item label="名称" prop="title">
       <el-input v-model="postForm.title" clearable />
     </el-form-item>
@@ -47,7 +49,7 @@
   </el-form>
   <div slot="footer" class="dialog-footer">
     <el-button @click="dialogFormVisible = false">取消</el-button>
-    <el-button :loading="btnLoading" type="primary" @click="handleSave()">保存</el-button>
+    <el-button :loading="loading" type="primary" @click="submitForm()">保存</el-button>
   </div>
 </el-dialog>
 </template>
@@ -55,6 +57,7 @@
 <script>
 import {
   getAuthRule,
+  createAuthRule,
   updateAuthRule
 } from '@/api/rules'
 import tree from '@/utils/tree'
@@ -76,14 +79,10 @@ export default {
   name: 'AuthRuleDetail',
   components: {},
   props: {
-    isEdit: {
-      type: Boolean,
-      default: false
-    },
     ruleList: {
       type: Array,
       default: []
-    }
+    },
   },
   data() {
     const validateRequire = (rule, value, callback) => {
@@ -99,9 +98,19 @@ export default {
       }
     }
     return {
+      isEdit: false,
       postForm: Object.assign({}, defaultForm),
-      btnLoading: false,
+      loading: false,
       dialogFormVisible: false,
+      ruleTop: [{
+        'id': 0,
+        'title': '顶级'
+      }],
+      pid: [],
+      props_pid: {
+        'label': 'title',
+        'value': 'id'
+      },
       rules: {
         title: [{
           validator: validateRequire
@@ -122,7 +131,9 @@ export default {
     }
   },
   computed: {
-
+    getRulesList() {
+      return this.ruleTop.concat(tree.listToTreeMulti(this.ruleList))
+    }
   },
   watch: {
 
@@ -141,19 +152,66 @@ export default {
         console.log(err)
       })
     },
-    show() {
+    handleAdd() {
+      this.isEdit = false
       this.dialogFormVisible = true
-      if (this.isEdit) {
-        const id = this.ruleList.id
-        this.fetchData(id)
-      } else {
-        this.postForm = Object.assign({}, defaultForm)
-      }
+      this.pid = []
+      this.postForm = Object.assign({}, defaultForm)
       this.$nextTick(() => {
         this.$refs['postForm'].clearValidate()
       })
     },
+    handleEdit(id) {
+      this.isEdit = true
+      this.dialogFormVisible = true
+      this.fetchData(id)
+      this.pid = tree.getParentsId(this.ruleList, id)
+      this.$nextTick(() => {
+        this.$refs['postForm'].clearValidate()
+      })
+    },
+    submitForm() {
+      this.btnLoading = true
+      this.$refs.postForm.validate(valid => {
+        if (valid) {
+          if (this.isEdit) {
+            updateAuthRule(this.postForm.id, this.postForm).then(response => {
+              this.$emit('updateRow', this.postForm)
+              this.dialogFormVisible = false
+              this.$message({
+                type: 'success',
+                message: '修改成功!'
+              })
+              this.loading = false
+            }).catch((error) => {
+              this.loading = false
+            })
 
+          } else {
+            createAuthRule(this.postForm).then(response => {
+              this.$emit('updateRow', this.postForm)
+              this.dialogFormVisible = false
+              this.$message({
+                type: 'success',
+                message: '添加成功!'
+              })
+              this.loading = false
+            }).catch((error) => {
+              this.loading = false
+            })
+          }
+
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    handleChange(value) {
+      if (value.length) {
+        this.postForm.pid = value[value.length - 1]
+      }
+    }
   }
 }
 </script>
