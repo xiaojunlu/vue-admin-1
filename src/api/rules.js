@@ -2,9 +2,24 @@ import request from '@/utils/request'
 
 export function getList(query) {
   return request({
-    url: '/admin/rules/index',
-    method: 'post',
+    url: '/admin/auth_rules',
+    method: 'get',
     data: query
+  })
+}
+
+export function getAuthRule(id) {
+  return request({
+    url: '/admin/auth_rules/'+id,
+    method: 'get',
+  })
+}
+
+export function updateAuthRule(id,data) {
+  return request({
+    url: '/admin/auth_rules/'+id,
+    method: 'put',
+    data
   })
 }
 
@@ -15,21 +30,9 @@ export function getListAll() {
   })
 }
 
-export function getinfo(id) {
-  return request({
-    url: '/admin/rules/getinfo',
-    method: 'get',
-    params: { id }
-  })
-}
 
-export function save(data) {
-  return request({
-    url: '/admin/rules/save',
-    method: 'post',
-    data
-  })
-}
+
+
 
 export function del(id) {
   return request({

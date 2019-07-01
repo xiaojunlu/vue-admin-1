@@ -49,13 +49,13 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="dialogFormVisible = false">取消</el-button>
-      <el-button :loading="btnLoading" type="primary" @click="saveData()">保存</el-button>
+      <el-button :loading="btnLoading" type="primary" @click="handleSave()">保存</el-button>
     </div>
   </el-dialog>
 </template>
 
 <script>
-import { getinfo, save } from '@/api/rules'
+import { getAuthRule, updateAuthRule } from '@/api/rules'
 import tree from '@/utils/tree'
 export default {
   name: 'RulesForm',
@@ -152,45 +152,39 @@ export default {
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       const _this = this
-      getinfo(id).then(response => {
-        if (response.status === 1) {
-          _this.temp.id = response.data.id
-          _this.temp.pid = response.data.pid
-          _this.temp.title = response.data.title
-          _this.temp.name = response.data.name
-          _this.temp.status = response.data.status
-          _this.temp.icon = response.data.icon
-          _this.temp.path = response.data.path
-          _this.temp.component = response.data.component
-          _this.temp.hidden = response.data.hidden
-          _this.temp.noCache = response.data.noCache
-          _this.temp.alwaysShow = response.data.alwaysShow
-          _this.temp.redirect = response.data.redirect
-          _this.pid = tree.getParentsId(this.ruleList, id)
-        }
+      getAuthRule(id).then(response => {
+        _this.temp.id = response.data.id
+        _this.temp.pid = response.data.pid
+        _this.temp.title = response.data.title
+        _this.temp.name = response.data.name
+        _this.temp.status = response.data.status
+        _this.temp.icon = response.data.icon
+        _this.temp.path = response.data.path
+        _this.temp.component = response.data.component
+        _this.temp.hidden = response.data.hidden
+        _this.temp.noCache = response.data.noCache
+        _this.temp.alwaysShow = response.data.alwaysShow
+        _this.temp.redirect = response.data.redirect
+        _this.pid = tree.getParentsId(this.ruleList, id)
       })
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
     },
-    saveData() {
+    handleSave() {
       this.btnLoading = true
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const _this = this
           const d = this.temp
-          save(d).then(response => {
-            if (response.status === 1) {
+          updateAuthRule(this.temp.id,d).then(response => {
               if (!d.id) {
                 d.id2 = response.data.id
               }
               this.$emit('updateRow', d)
               _this.dialogFormVisible = false
-              _this.$message.success(response.msg)
-            } else {
-              _this.$message.error(response.msg)
-            }
-            _this.btnLoading = false
+              _this.$message.success('修改成功')
+              _this.btnLoading = false
           }).catch((error) => {
             this.btnLoading = false
           })

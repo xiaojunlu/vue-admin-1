@@ -31,13 +31,13 @@ npm run build
 
 第三步（已安装，可略过）：安装npm install -g @vue/cli，参考https://cli.vuejs.org/zh/guide/installation.html
 
-第四步：下载tp5-api 代码，下载地址：https://github.com/hardphp/tp5-api
+第四步：下载tp5-api 代码
 
 第五步：配置config/database.php 数据库信息
 
 第六步：本地hosts文件配置域名api.hardphp.com（域名根据自己喜好，与vue-admin对应即可），然后指向/public目录即可。
 
-第七步：下载vue-admin 代码，下载地址：https://github.com/hardphp/vue-admin, 配置文件vue.config.js , src/config ,baseURL 根据自己需要更改
+第七步：下载vue-admin 代码， 配置文件vue.config.js , src/config ,baseURL 根据自己需要更改
 
 第八步：进入vue-admin 目录，依次npm install
 
@@ -45,9 +45,3 @@ npm run build
 
 第十步：生产模式 npm run build ，把生成的代码放到/public 下，更名为vue-admin , 浏览器输入 api.hardphp.com/vue-admin ,账号admin，密码123456 即可。
 ```
-
-```
-QQ交流群 :488148501
-微信交流群：
-```
-![image](https://github.com/hardphp/tp5-api/blob/master/895310371197138665.jpg)
