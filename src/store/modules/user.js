@@ -1,5 +1,12 @@
-import { loginByUsername, getUserInfo } from '@/api/login'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import {
+  login,
+  getUserInfo
+} from '@/api/user/index'
+import {
+  getToken,
+  setToken,
+  removeToken
+} from '@/utils/auth'
 
 const user = {
   state: {
@@ -46,10 +53,18 @@ const user = {
 
   actions: {
     // 用户名登录
-    LoginByUsername({ commit }, userInfo) {
-      const username = userInfo.username.trim()
+    login({
+      commit
+    }, userInfo) {
+      const {
+        username,
+        password
+      } = userInfo
       return new Promise((resolve, reject) => {
-        loginByUsername(username, userInfo.password).then(response => {
+        login({
+          username: username.trim(),
+          password: password
+        }).then(response => {
           const data = response.data
           commit('SET_TOKEN', data.token)
           setToken(response.data.token)
@@ -61,7 +76,10 @@ const user = {
     },
 
     // 获取用户信息
-    GetUserInfo({ commit, state }) {
+    getUserInfo({
+      commit,
+      state
+    }) {
       return new Promise((resolve, reject) => {
         getUserInfo().then(response => {
           if (!response.data) { // 由于mockjs 不支持自定义状态码只能这样hack
@@ -88,7 +106,9 @@ const user = {
     },
 
     // 前端 登出
-    FedLogOut({ commit }) {
+    logout({
+      commit
+    }) {
       return new Promise(resolve => {
         commit('SET_TOKEN', '')
         commit('SET_ROLES', 0)
@@ -98,7 +118,10 @@ const user = {
     },
 
     // 动态修改权限
-    ChangeRoles({ commit, dispatch }) {
+    ChangeRoles({
+      commit,
+      dispatch
+    }) {
       return new Promise(resolve => {
         getUserInfo().then(response => {
           const data = response.data

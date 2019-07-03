@@ -1,38 +1,53 @@
 import axios from 'axios'
-import { Message, MessageBox } from 'element-ui'
+import {
+  MessageBox,
+  Message
+} from 'element-ui'
 import store from '@/store'
 import myconfig from '@/config'
-import { getToken, removeToken, getSignature } from '@/utils/auth'
+import {
+  getToken,
+  removeToken,
+  getSignature
+} from '@/utils/auth'
 import qs from 'qs'
 
-const baseURL = process.env.NODE_ENV === 'production'
-  ? myconfig.baseUrl.pro
-  : myconfig.baseUrl.dev
+const baseURL = process.env.NODE_ENV === 'production' ?
+  myconfig.baseUrl.pro :
+  myconfig.baseUrl.dev
 
 // create an axios instance
 const service = axios.create({
   baseURL: baseURL, // api 的 base_url
   timeout: 10000, // request timeout,
-  headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' }
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+  }
 })
 
 // request interceptor
 service.interceptors.request.use(
   config => {
-    // Do something before request is sent
     // 在请求发出之前进行一些操作
     config.headers['x-access-appid'] = myconfig.appid
-
+    // token
     if (store.getters.token) {
-      // token
       config.headers['x-access-token'] = getToken()
     }
+
+    // 将对象 序列化成URL的形式，以&进行拼接
     if (config.method === 'post') {
-      config.data = getSignature(config.data)
       config.data = qs.stringify(config.data)
     } else if (config.method === 'get') {
-      config.params = getSignature(config.params)
+
     }
+
+    // if (config.method === 'post') {
+    //   config.data = getSignature(config.data)
+    //   config.data = qs.stringify(config.data)
+    // } else if (config.method === 'get') {
+    //   config.params = getSignature(config.params)
+    // }
     return config
   },
   error => {
@@ -69,7 +84,7 @@ service.interceptors.response.use(
     //       cancelButtonText: '取消',
     //       type: 'warning'
     //     }).then(() => {
-    //       store.dispatch('FedLogOut').then(() => {
+    //       store.dispatch('logout').then(() => {
     //         // 清空token
     //         removeToken()
     //         location.reload() // 为了重新实例化vue-router对象 避免bug
@@ -83,7 +98,6 @@ service.interceptors.response.use(
   },
   error => {
     const res = error.response.data
-    console.log(res.error.message)
     Message({
       message: res.error.message,
       type: 'error',

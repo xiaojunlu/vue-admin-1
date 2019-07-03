@@ -20,14 +20,14 @@ router.beforeEach((to, from, next) => {
       if (store.getters.roles > 0) {
         next()
       } else {
-        store.dispatch('GetUserInfo').then(res => {
+        store.dispatch('getUserInfo').then(res => {
           const access = res.data.access
-          store.dispatch('GenerateRoutes', access).then(() => { // 根据roles权限生成可访问的路由表
+          store.dispatch('generateRoutes', access).then(() => { // 根据roles权限生成可访问的路由表
             router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
             next({ ...to, replace: true }) // hack方法 确保addRoutes已完成
           })
         }).catch((err) => {
-          store.dispatch('FedLogOut').then(() => {
+          store.dispatch('logout').then(() => {
             Message.error(err || '验证失败，请重新登陆')
             next({ path: '/' })
           })
