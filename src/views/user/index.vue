@@ -154,7 +154,7 @@ import {
 import waves from '@/directive/waves'
 import openWindow from '@/utils/openWindow'
 import Pagination from '@/components/Pagination'
-import UserDetailDialog from './user-detail-dialog'
+import UserDetailDialog from './UserDetailDialog'
 
 export default {
   name: 'User',
@@ -191,6 +191,7 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
+        username: '',
         verifiedMobile: '',
         locked: '',
         startTime: '',
@@ -235,6 +236,7 @@ export default {
       this.listQuery = {
         page: 1,
         limit: 20,
+        username: '',
         verifiedMobile: '',
         locked: '',
         startTime: '',

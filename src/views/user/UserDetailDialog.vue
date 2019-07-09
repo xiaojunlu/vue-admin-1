@@ -33,7 +33,7 @@
   </el-form>
   <div slot="footer" class="dialog-footer">
     <el-button @click="dialogFormVisible = false">取消</el-button>
-    <el-button :loading="btnLoading" type="primary" @click="submitForm()">保存</el-button>
+    <el-button :loading="loading" type="primary" @click="submitForm()">保存</el-button>
   </div>
 </el-dialog>
 </template>
@@ -78,21 +78,21 @@ export default {
     Upload
   },
   data() {
-    // const validateMobile = (rule, value, callback) => {
-    //   if (validMobile(value)) {
-    //     callback()
-    //   } else {
-    //     return callback(new Error())
-    //   }
-    // }
-    const validateMobile = (rule, value, callback) => {
+    const validateUsername = (rule, value, callback) => {
       if (!value) {
         return callback(new Error('账号必填'));
       }
       checkUsername(value).then(response => {
-        console.log(response)
+        if (!response.data.success) {
+          return callback(new Error(response.data.message));
+        } else {
+          callback();
+        }
+        console.log(response.data.message)
       })
 
+    }
+    const validateMobile = (rule, value, callback) => {
       if (validMobile(value)) {
         callback()
       } else {
@@ -114,7 +114,7 @@ export default {
       }
     }
     return {
-      btnLoading: false,
+      loading: false,
       roles: {},
       user: Object.assign({}, defaultUser),
       config: {
@@ -138,8 +138,9 @@ export default {
           trigger: 'change'
         }],
         username: [{
-          required: true,
-          message: '账号必填',
+          //  required: true,
+          validator: validateUsername,
+          //    message: '账号必填',
           trigger: 'blur'
         }],
         truename: [{

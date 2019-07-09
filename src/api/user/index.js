@@ -42,6 +42,7 @@ export function createUser(data) {
   })
 }
 
+// 更新用戶
 export function updateUser(id, data) {
   return request({
     url: '/admin/users/' + id,
@@ -55,7 +56,9 @@ export function checkUsername(username) {
   return request({
     url: '/admin/users/username/check',
     method: 'get',
-    params: username
+    params: {
+      username: username
+    }
   })
 }
 
